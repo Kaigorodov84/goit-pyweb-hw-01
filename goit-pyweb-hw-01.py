@@ -1,7 +1,37 @@
+from abc import ABC, abstractmethod
 from collections import UserDict
 from datetime import datetime as dtdt
 import pickle
 
+class AbstractBasic(ABC):
+    @abstractmethod
+    def show_contacts(self, contacts):
+        pass
+
+    @abstractmethod
+    def show_commands(self, commands):
+        pass
+
+class ConsoleAbstract(AbstractBasic):
+    def show_contacts(self, contacts):
+        for contact in contacts:
+            print(f"{contact['name']}: {', '.join(contact['phones'])}")
+
+    def show_commands(self, commands):
+        print("Available commands:")
+        for command in commands:
+            print(f"-{command}")
+
+class WebAbstract(AbstractBasic):
+    def show_contacts(self, contacts):
+        # Implement displaying contacts in a web interface
+        pass
+
+    def show_commands(self, commands):
+        # Implement displaying commands in a web interface
+        pass
+    
+    
 class Field:
     def __init__(self, value):
         self.value = value
@@ -184,6 +214,7 @@ def load_data(filename="addressbook.pkl"):
 
                        #ГОЛОВНА ЛОГІКА #
 if __name__ == "__main__":
+    view = ConsoleAbstract() #змінна для відображення інформації користувачу
     book = load_data()
     print("Welcome to the assistant bot!")
     while True:
@@ -222,5 +253,8 @@ if __name__ == "__main__":
         elif command == "birthdays":
             print(book.birthdays())
 
+        elif command == "help": # відображення доступних команд
+            view.show_commands(["close", "exit", "hello", "add", "change",\
+                                 "phone", "all", "add_birthday", "show-birthday", "birthdays"])
         else:
             print("Invalid command.")
